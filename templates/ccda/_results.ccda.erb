@@ -5,49 +5,80 @@
     <!--Diagnostic Results section template-->
     <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Results"/>
     <title>Diagnostic Results</title>
-    <%== render :partial => 'narrative_block', :locals => {:entries => entries, :section => 'results', :value=>true} %>
+
+    <text>
+      <table border="1" width="100%">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Codes</th>
+            <th>Time</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% entries.each_with_index do |panel, i| -%>
+            <tr>
+              <td ID="results-desc-<%= i %>"><%= panel.description %></td>
+              <td ID="results-code-<%= i %>"><%= panel.codes_to_s %></td>
+              <td><%= panel.times_to_s %></td>
+              <td></td>
+            </tr>
+
+          <% panel.results.each_with_index do |result, j| -%>
+            <tr>
+              <td ID="results-desc-<%= i %>-<%= j %>"><%= result.description %></td>
+              <td ID="results-code-<%= i %>-<%= j %>"><%= result.codes_to_s %><br/><%= result.specifics %></td>
+              <td><%= result.times_to_s %></td>
+              <td>
+                <% result.values.each do |value| %>
+                  <% if value.respond_to? :scalar %>
+                    <%= value.try(:scalar) %><br/>
+                  <% elsif value.respond_to? :codes %>
+                    <% value.codes.each do |system, vals| %>
+                      <%= system %>: <%= vals.join(',') %><br/>
+                    <% end %>
+                  <% else %>
+                    UNKNOWN VALUE
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <%- end -%>
+          <%- end -%>
+        </tbody>
+      </table>
+    </text>
+
+    <% entries.each_with_index do |panel, i| -%>
     <entry typeCode="DRIV">
-      <organizer classCode="BATTERY" moodCode="EVN">
+      <organizer classCode="CLUSTER" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.1"/>
         <!--Result organizer template -->
         <id root="<%= UUID.generate %>"/>
-        <code nullFlavor="NA"/>
+        <%== code_display(panel, 'preferred_code_sets' => ['LOINC', 'SNOMED-CT']) %>
         <statusCode code="completed"/>
-        <effectiveTime value="<%= Time.now.utc.to_formatted_s(:number) %>"/>
-          <component>
-           <observation classCode="OBS" moodCode="EVN">
-            <templateId root="2.16.840.1.113883.10.20.22.4.2"/>
-              <id root="<%= UUID.generate %>"/>
-              <code nullFlavor="UNK">
-                <originalText><reference value="Unknown"/></originalText>
-              </code>
-              <text>
-                <reference value="Unknown"/>
-              </text>
-              <statusCode code="completed"/>
-              <effectiveTime nullFlavor="UNK"/>
-            </observation>
-          </component>
-        <% entries.each_with_index do |entry, i| -%>
+
+        <% panel.results.each_with_index do |result, j| -%>
         <component>
           <observation classCode="OBS" moodCode="EVN">
             <templateId root="2.16.840.1.113883.10.20.22.4.2"/>
             <!-- Result observation template -->
             <id root="<%= UUID.generate %>"/>
-            <%== code_display(entry, 'preferred_code_sets' => ['LOINC', 'SNOMED-CT']) %>
+            <%== code_display(result, 'preferred_code_sets' => ['LOINC', 'SNOMED-CT']) %>
             <text>
-              <reference value="#results-desc-<%= i %>"/>
+              <reference value="#results-desc-<%=i%>-<%=j%>"/>
             </text>
             <statusCode code="completed"/>
-            <effectiveTime <%= value_or_null_flavor(entry.as_point_in_time) %>/>
-              <% ev = entry.values.first
+            <effectiveTime <%= value_or_null_flavor(result.as_point_in_time) %>/>
+              <% ev = result.values.first
                 if ev.present? && ev.respond_to?(:scalar) -%>
                <% if is_num?(ev.scalar) -%>
                 <value xsi:type="PQ" value="<%= ev.scalar %>" <% if ev.units -%>unit="<%= ev.units %>"<% end -%>/>
                <% elsif is_bool?(ev.scalar)%>
                 <value xsi:type="BL" value="<%= ev.scalar %>" />
                <% else -%>
-                <value xsi:type="ST" ><%= ev.scalar %></value> 
+                <value xsi:type="ST" ><%= ev.scalar %></value>
                <% end -%>
               <% else -%>
               <value xsi:type="PQ" nullFlavor="UNK"/>
@@ -57,5 +88,6 @@
         <% end -%>
       </organizer>
     </entry>
+    <% end -%>
   </section>
 </component>

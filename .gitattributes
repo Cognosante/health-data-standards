@@ -1,2 +1,3 @@
 resources/schema/* linguist-vendored
 resource/schematron/* linguist-vendored
+text eol=lf

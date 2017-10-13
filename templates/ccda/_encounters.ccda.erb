@@ -1,25 +1,93 @@
-<component>
+
+  <component>
   <!--Encounters-->
   <section>
-    <templateId root="2.16.840.1.113883.10.20.22.2.22" extension="2015-08-01"/> <!-- CCDA Template id -->
+    <templateId root="2.16.840.1.113883.10.20.22.2.22.1" extension="2015-08-01"/> <!-- CCDA Template id -->
     <!--Encounters section template-->
     <code code="46240-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of encounters"/>
     <title>Encounters</title>
     <%== render :partial => 'narrative_block', :locals => {:entries => entries, :section => 'encounters'} %>
+
     <% entries.each_with_index do |entry, i| -%>
-    <entry typeCode="DRIV">
-      <encounter classCode="ENC" moodCode="EVN">
-		    <templateId root="2.16.840.1.113883.10.20.22.4.49"/>
-        <!-- Encounter activity template -->
-        <id root="<%= UUID.generate %>"/>
-        <%== render :partial => 'code_with_reference', :locals => {:entry => entry, :i => i, :section => 'encounters',
-                                                                   :preferred_code_sets => ['CPT']} %>
-        <text>
-          <reference value="#encounters-desc-<%= i %>"/>
-        </text>
-        <effectiveTime <%= value_or_null_flavor(entry.as_point_in_time) %>/>
-      </encounter>
-    </entry>
+
+      <entry>
+          <encounter classCode="ENC" moodCode="EVN">
+              <templateId root="2.16.840.1.113883.10.20.22.4.49"></templateId>
+              <id nullFlavor="UNK"></id>
+              <id root="Facility<%= i %>" extension="<%= i %>"></id>
+
+              <%== render :partial => 'code_with_reference', :locals => {:entry => entry, :i => i, :section => 'encounters',
+                                                                        :preferred_code_sets => ['CPT', 'SNOMED-CT']} %>
+              <text>
+                <reference value="#encounters-desc-<%= i %>"/>
+              </text>
+
+              <effectiveTime xsi:type="IVL_TS">
+                <low <%= value_or_null_flavor(entry.start_time) %>/>
+                <high <%= value_or_null_flavor(entry.end_time) %>/>
+              </effectiveTime>
+
+              <informant>
+                  <assignedEntity classCode="ASSIGNED">
+                      <id root="2.16.840.1.113883.4.6" extension="1346504529"></id>
+                      <addr nullFlavor="UNK"></addr>
+                      <telecom nullFlavor="UNK"></telecom>
+                      <assignedPerson>
+                          <name use="L">
+                              <family>Bean</family>
+                              <given>Allen</given>
+                          </name>
+                      </assignedPerson>
+                  </assignedEntity>
+              </informant>
+
+              <participant typeCode="LOC">
+                  <participantRole classCode="SDLOC">
+                      <templateId root="2.16.840.1.113883.10.20.22.4.32"></templateId>
+                      <id root="<%= SecureRandom.uuid %>" extension="Department<%=i%>"></id>
+                      <code code="1160-1" codeSystem="2.16.840.1.113883.6.259" codeSystemName="HealthcareServiceLocation" displayName="Location A"></code>
+                  </participantRole>
+              </participant>
+
+              <% if diagnosis = entry.reason then -%>
+
+            <entryRelationship typeCode="REFR">
+                <act classCode="ACT" moodCode="EVN">
+                    <!-- Encounter Diagnosis -->
+                    <templateId root="2.16.840.1.113883.10.20.22.4.80" extension="2015-08-01" />
+                    <templateId root="2.16.840.1.113883.10.20.22.4.80"/>
+                    <code code="29308-4" displayName="Diagnosis"
+                        codeSystem="2.16.840.1.113883.6.1"
+                        codeSystemName="LOINC"/>
+
+                    <entryRelationship typeCode="SUBJ">
+                        <observation classCode="OBS" moodCode="EVN">
+                            <!-- Problem Observation -->
+                            <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01" />
+                            <templateId root="2.16.840.1.113883.10.20.22.4.4"/>
+                            <id root="<%= SecureRandom.uuid %>"/>
+                            <code code="282291009" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.96"
+                                codeSystemName="SNOMED CT">
+                                <translation code="29308-4" displayName="Diagnosis" codeSystem="2.16.840.1.113883.6.1"
+                                    codeSystemName="LOINC"/>
+                            </code>
+                            <statusCode code="completed"/>
+
+                            <effectiveTime>
+                              <low <%= value_or_null_flavor(diagnosis.as_point_in_time) %>/>
+                            </effectiveTime>
+
+                            <%== code_display(diagnosis, {'tag_name' => 'value', 'extra_content' => 'xsi:type="CD"', 'preferred_code_sets' => ['SNOMED-CT']}) %>
+                        </observation>
+                    </entryRelationship>
+                </act>
+            </entryRelationship>
+
+              <% end -%>
+
+          </encounter>
+      </entry>
+
     <% end -%>
   </section>
 </component>

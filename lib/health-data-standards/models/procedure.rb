@@ -14,6 +14,7 @@ class Procedure < Entry
 
   field :radiation_dose,      type: Hash 
   field :radiation_duration,  type: Hash 
+  embeds_one :reason, class_name: "Entry"
 
   embeds_one :facility
 

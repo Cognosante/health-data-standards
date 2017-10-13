@@ -11,7 +11,7 @@
       <act classCode="ACT" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.3" extension="2015-08-01"/>
         <!-- Problem act template -->
-        <id root="<%= UUID.generate %>"/>
+        <id root="<%= SecureRandom.uuid %>"/>
         <code nullFlavor="NA"/>
         <% if entry.status.eql? 'resolved' -%>
         <statusCode code="completed"/>
@@ -24,9 +24,9 @@
         <entryRelationship typeCode="SUBJ" inversionInd="false">
           <observation classCode="OBS" moodCode="EVN">
             <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01"/>
-            
+
             <!--Problem observation template - NOT episode template-->
-            <id root="<%= UUID.generate %>"/>
+            <id root="<%= SecureRandom.uuid %>"/>
             <code code="64572001" displayName="Condition" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED-CT">
               <translation code="75323-6" displayName="Condition" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
             </code>
@@ -34,9 +34,12 @@
               <reference value="#conditions-desc-<%= i %>"/>
             </text>
             <statusCode code="completed"/>
-            <effectiveTime>
-              <low <%= value_or_null_flavor(entry.as_point_in_time) %>/>
+
+            <effectiveTime xsi:type="IVL_TS">
+              <low <%= value_or_null_flavor(entry.start_time) %>/>
+              <high <%= value_or_null_flavor(entry.end_time) %>/>
             </effectiveTime>
+
             <% if entry.ordinality -%>
               <priorityCode code="8319008" codeSystem="2.16.840.1.113883.6.96" displayName="Principal diagnosis" />
             <% end -%>

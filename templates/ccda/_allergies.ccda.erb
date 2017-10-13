@@ -12,7 +12,7 @@
       <act classCode="ACT" moodCode="EVN">
         <templateId root="2.16.840.1.113883.10.20.22.4.30"/>
         <!--Allergy act template -->
-        <id root="<%= UUID.generate %>"/>
+        <id root="<%= SecureRandom.uuid %>"/>
         <code nullFlavor="NA"/>
         <statusCode code="active"/>
         <effectiveTime>
@@ -21,7 +21,7 @@
         <entryRelationship typeCode="SUBJ" inversionInd="false">
           <observation classCode="OBS" moodCode="EVN">
             <templateId root="2.16.840.1.113883.10.20.22.4.7"/>
-            <id root="<%= UUID.generate %>"/>
+            <id root="<%= SecureRandom.uuid %>"/>
             <code code="416098002" codeSystem="2.16.840.1.113883.6.96" displayName="drug allergy" codeSystemName="SNOMED CT">
               <originalText><reference value="#allergies-desc-<%= i %>"/></originalText>
             </code>

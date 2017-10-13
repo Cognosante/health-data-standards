@@ -95,10 +95,10 @@
       <% else %>
         <%== render :partial => 'medications_no_current', :locals => {:entries => patient.medications} %>
       <% end -%>
-      <% if patient.results.present? -%>
-        <%== render :partial => 'results', :locals => {:entries => patient.results} %>
+      <% if patient.panels.present? -%>
+        <%== render :partial => 'results', :locals => {:entries => patient.panels} %>
       <% else -%>
-        <%== render :partial => 'results_no_current', :locals => {:entries => patient.results} %>
+        <%== render :partial => 'results_no_current', :locals => {} %>
       <% end -%>
       <% if patient.conditions.present? -%>
         <%== render :partial => 'conditions', :locals => {:entries => patient.conditions} %>

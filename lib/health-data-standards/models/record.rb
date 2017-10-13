@@ -37,6 +37,7 @@ class Record
   embeds_many :medications
   embeds_many :procedures
   embeds_many :results, class_name: "LabResult"
+  embeds_many :panels, class_name: "LabPanel"
   embeds_many :socialhistories, class_name: "Entry"
   embeds_many :care_experiences
   embeds_many :assessments
