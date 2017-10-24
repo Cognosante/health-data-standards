@@ -3,7 +3,7 @@
   <realmCode code="US"/>
   <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
   <templateId root="2.16.840.1.113883.10.20.22.1.1" extension="2015-08-01"/>
-  <templateId root="2.16.840.1.113883.10.20.22.1.2" extension="2015-08-01"/> 
+  <templateId root="2.16.840.1.113883.10.20.22.1.2" extension="2015-08-01"/>
   <id root="2.16.840.1.113883.19.5" extension="<%= patient.id %>" assigningAuthorityName="Cypress Project"/>
   <code code="34133-9" displayName="Summarization of episode note" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
   <title>Cypress C-CDA R2.1 Patient Test Record: <%= patient.first %> <%= patient.last %></title>
@@ -14,12 +14,13 @@
     <patientRole>
       <id root="Cypress" extension="<%= patient.id %>"/>
       <addr use="HP">
-        <streetAddressLine>202 Burlington Rd.</streetAddressLine>
-        <city>Bedford</city>
-        <state>MA</state>
-        <postalCode>01730</postalCode>
+        <%# synthea: first address is place of residence %>
+        <streetAddressLine><%= patient.addresses.first.street.first %></streetAddressLine>
+        <city><%= patient.addresses.first.city %></city>
+        <state><%= patient.addresses.first.state %></state>
+        <postalCode><%= patient.addresses.first.zip %></postalCode>
       </addr>
-      <telecom value="tel:+1-781-271-3000"/>
+      <telecom value="tel:<%= patient.telecoms.last.value %>"/>
       <patient>
         <name>
           <given><%= patient.first %></given>
@@ -34,7 +35,7 @@
           <ethnicGroupCode code="<%= patient.ethnicity['code'] %>" <% if patient.ethnicity['name']%>displayName="<%= patient.ethnicity['name'] %>"<% end %> codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
         <% end %>
         <%
-          languages = patient.languages 
+          languages = patient.languages
           languages = ["en-US"] if languages.nil? or languages.empty?
           languages.each do |language|%>
           <languageCommunication>
