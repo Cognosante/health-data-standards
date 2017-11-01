@@ -31,9 +31,12 @@
         <% if (patient.race) %>
           <raceCode code="<%= patient.race['code'] %>" <% if patient.race['name']%>displayName="<%= patient.race['name'] %>"<% end %> codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
         <% end %>
-        <% if (patient.race) %>
-          <ethnicGroupCode code="<%= patient.ethnicity['code'] %>" <% if patient.ethnicity['name']%>displayName="<%= patient.ethnicity['name'] %>"<% end %> codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
-        <% end %>
+
+        <% if (patient.race["name"] == 'Hispanic') -%>
+          <ethnicGroupCode code="2135-2" displayName="Hispanic or Latino" codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.114222.4.11.837"/>
+        <% else -%>
+          <ethnicGroupCode code="2186-5" displayName="Not Hispanic or Latino" codeSystemName="CDC Race and Ethnicity" codeSystem="2.16.840.1.113883.6.238"/>
+        <% end -%>
         <%
           languages = patient.languages
           languages = ["en-US"] if languages.nil? or languages.empty?

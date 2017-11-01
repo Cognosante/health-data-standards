@@ -43,7 +43,7 @@
             <% if entry.ordinality -%>
               <priorityCode code="8319008" codeSystem="2.16.840.1.113883.6.96" displayName="Principal diagnosis" />
             <% end -%>
-            <%== code_display(entry, {'tag_name' => 'value', 'extra_content' => 'xsi:type="CD"', 'preferred_code_sets' => ['SNOMED-CT']}) %>
+            <%== code_display(entry, {'tag_name' => 'value', 'extra_content' => 'xsi:type="CD"', 'preferred_code_sets' => ['ICD-10-CM', 'ICD-9-CM', 'SNOMED-CT']}) %>
             <% if entry.status -%>
             <entryRelationship typeCode="REFR">
               <observation classCode="OBS" moodCode="EVN">
