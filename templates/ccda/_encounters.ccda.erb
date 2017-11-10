@@ -17,7 +17,7 @@
               <id root="Facility<%= i %>" extension="<%= i %>"></id>
 
               <%== render :partial => 'code_with_reference', :locals => {:entry => entry, :i => i, :section => 'encounters',
-                                                                        :preferred_code_sets => ['CPT', 'SNOMED-CT']} %>
+                                                                        :preferred_code_sets => ['CPT', 'ICD-9-CM', 'ICD-10-CM', 'SNOMED-CT']} %>
               <text>
                 <reference value="#encounters-desc-<%= i %>"/>
               </text>
