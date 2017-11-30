@@ -10,7 +10,7 @@
 
     <% entries.each_with_index do |entry, i| -%>
 
-      <entry>
+       <entry>
           <encounter classCode="ENC" moodCode="EVN">
               <templateId root="2.16.840.1.113883.10.20.22.4.49"></templateId>
               <id nullFlavor="UNK"></id>
@@ -27,27 +27,39 @@
                 <high <%= value_or_null_flavor(entry.end_time) %>/>
               </effectiveTime>
 
-              <informant>
-                  <assignedEntity classCode="ASSIGNED">
-                      <id root="2.16.840.1.113883.4.6" extension="1346504529"></id>
-                      <addr nullFlavor="UNK"></addr>
-                      <telecom nullFlavor="UNK"></telecom>
-                      <assignedPerson>
-                          <name use="L">
-                              <family>Bean</family>
-                              <given>Allen</given>
-                          </name>
-                      </assignedPerson>
-                  </assignedEntity>
-              </informant>
 
-              <participant typeCode="LOC">
-                  <participantRole classCode="SDLOC">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.32"></templateId>
-                      <id root="<%= SecureRandom.uuid %>" extension="Department<%=i%>"></id>
-                      <code code="1160-1" codeSystem="2.16.840.1.113883.6.259" codeSystemName="HealthcareServiceLocation" displayName="Location A"></code>
-                  </participantRole>
-              </participant>
+                <performer>
+                    <assignedEntity>
+                        <id extension="<%= entry.performer.npi %>" root="2.16.840.1.113883.4.6"/>
+    					<code code="<%= entry.performer.taxonomy_code %>" displayName="<%= entry.performer.specialty %>" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC"/>
+
+                        <assignedPerson>
+                            <name>
+                                <family><%= entry.performer.family_name %></family>
+                                <given><%= entry.performer.given_name %></given>
+                            </name>
+                        </assignedPerson>                        
+                    </assignedEntity>
+                </performer>
+
+                <participant typeCode="LOC">
+                    <participantRole classCode="SDLOC">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
+                        <!-- Service Delivery Location template -->
+                        <code code="1060-3" codeSystem="2.16.840.1.113883.6.259" codeSystemName="HL7 HealthcareServiceLocation" displayName="Inpatient Medical Ward"/>
+                        <addr>
+                            <streetAddressLine><%= entry.facility.addresses.first.street.first %></streetAddressLine>
+                            <city><%= entry.facility.addresses.first.city %></city>
+                            <state><%= entry.facility.addresses.first.state %></state>
+                            <postalCode><%= entry.facility.addresses.first.zip %></postalCode>
+                            <country>US</country>
+                        </addr>
+                        <playingEntity classCode="PLC">
+                            <name><%= entry.facility.name %></name>
+                        </playingEntity>
+                    </participantRole>
+                </participant>
+
 
               <% if diagnosis = entry.reason then -%>
 

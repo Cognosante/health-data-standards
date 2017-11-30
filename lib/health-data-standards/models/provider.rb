@@ -7,6 +7,7 @@ class Provider
   TAX_ID_OID = '2.16.840.1.113883.4.2'
 
   field :specialty   , type: String
+  field :taxonomy_code , type: String
   field :phone       , type: String
 
   validates_uniqueness_of :npi, allow_blank: true
