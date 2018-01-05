@@ -89,7 +89,7 @@
                               <low <%= value_or_null_flavor(diagnosis.as_point_in_time) %>/>
                             </effectiveTime>
 
-                            <%== code_display(diagnosis, {'tag_name' => 'value', 'extra_content' => 'xsi:type="CD"', 'preferred_code_sets' => ['SNOMED-CT']}) %>
+                            <%== code_display(diagnosis, {'tag_name' => 'value', 'extra_content' => 'xsi:type="CD"', 'preferred_code_sets' => ['CPT', 'ICD-9-CM', 'ICD-10-CM', 'SNOMED-CT']}) %>
                         </observation>
                     </entryRelationship>
                 </act>
