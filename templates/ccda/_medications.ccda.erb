@@ -29,10 +29,15 @@
             </manufacturedMaterial>
           </manufacturedProduct>
         </consumable>
+
+        <% if true %>
+        <!-- Entered By -->
         <author typeCode="AUT">
             <time <%= value_or_null_flavor(entry.as_point_in_time) %>/>
             <assignedAuthor classCode="ASSIGNED">
               <id root="2.16.840.1.113883.4.6" extension="<%= entry.prescriber.npi %>"/>
+              <code code="<%= entry.prescriber.taxonomy_code %>" displayName="<%= entry.prescriber.specialty %>" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC"/>
+              
               <addr>
                 <streetAddressLine><%= entry.prescriber.addresses.first.street.first %></streetAddressLine>
                 <city><%= entry.prescriber.addresses.first.city %></city>
@@ -61,9 +66,14 @@
               </representedOrganization>
             </assignedAuthor>
         </author>
+        <% end %>
+
+        <% if true %>        
         <informant>
             <assignedEntity>
               <id root="2.16.840.1.113883.4.6" extension="<%= entry.prescriber.npi %>"/>
+              <code code="<%= entry.prescriber.taxonomy_code %>" displayName="<%= entry.prescriber.specialty %>" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC"/>
+              
               <addr>
                 <streetAddressLine><%= entry.prescriber.addresses.first.street.first %></streetAddressLine>
                 <city><%= entry.prescriber.addresses.first.city %></city>
@@ -92,6 +102,7 @@
               </representedOrganization>
             </assignedEntity>
         </informant>
+        <% end %>
 
         <% if true %>
         <entryRelationship typeCode="REFR">
@@ -105,6 +116,10 @@
                     <time <%= value_or_null_flavor(entry.as_point_in_time) %>/>
                     <assignedAuthor classCode="ASSIGNED">
                         <id root="2.16.840.1.113883.4.6" extension="<%= entry.prescriber.npi %>"/>
+                        <% if false %>
+                        <code code="<%= entry.prescriber.taxonomy_code %>" displayName="<%= entry.prescriber.specialty %>" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC"/>
+                        <% end %>
+
                         <addr use="WP">
                             <streetAddressLine><%= entry.prescriber.addresses.first.street.first %></streetAddressLine>
                             <city><%= entry.prescriber.addresses.first.city %></city>
