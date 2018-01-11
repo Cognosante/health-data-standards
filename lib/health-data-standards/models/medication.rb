@@ -45,6 +45,8 @@ class Medication < Entry
   alias :order_information :orderInformation
   alias :order_information= :orderInformation=
 
+  embeds_one :prescriber, class_name: "Provider"
+
   def shift_dates(date_diff)
     super
     self.fulfillmentHistory.each do |fh|

@@ -29,7 +29,73 @@
             </manufacturedMaterial>
           </manufacturedProduct>
         </consumable>
+        
+        <% if false %>
+        <informant>
+          <assignedEntity>
+            <id root="2.16.840.1.113883.4.6" extension="<%= entry.prescriber.npi %>"/>
+            <addr>
+              <streetAddressLine><%= entry.prescriber.addresses.first.street.first %></streetAddressLine>
+              <city><%= entry.prescriber.addresses.first.city %></city>
+              <state><%= entry.prescriber.addresses.first.state %></state>
+              <postalCode><%= entry.prescriber.addresses.first.zip %></postalCode>
+              <country>US</country>                          
+            </addr>
+            <telecom nullFlavor="UNK"/>
+            <assignedPerson>
+                <name>
+                    <given><%= entry.prescriber.given_name %></given>
+                    <family><%= entry.prescriber.family_name %></family>
+                </name>
+            </assignedPerson>
+            <representedOrganization>
+              <id root="2.201" extension="0001"/>
+              <id root="2.16.840.1.113883.4.6" extension="1234567893"/>
+              <name>NEXTGEN Medical Practice (Horsham)</name>
+              <telecom use="WP" value="tel:+1-2156577010"/>
+              <addr>
+                <streetAddressLine>795 Horsham Road</streetAddressLine>
+                <city>Horsham</city>
+                <state>PA</state>
+                <postalCode>19044</postalCode>
+              </addr>
+            </representedOrganization>
+          </assignedEntity>
+        </informant>
+        <% end %>
+
       </substanceAdministration>
+
+      <entryRelationship typeCode="REFR">
+          <supply classCode="SPLY" moodCode="INT">
+              <templateId root="2.16.840.1.113883.10.20.22.4.17"/>
+              <id root="<%= SecureRandom.uuid %>"/>
+              <statusCode code="completed"/>
+              <effectiveTime <%= value_or_null_flavor(entry.as_point_in_time) %>/>
+              <repeatNumber value="1"/>
+              <author typeCode="AUT" contextControlCode="OP">
+                  <time <%= value_or_null_flavor(entry.as_point_in_time) %>/>
+                  <assignedAuthor classCode="ASSIGNED">
+                      <id root="2.16.840.1.113883.4.6" extension="<%= entry.prescriber.npi %>"/>
+                      <addr use="WP">
+                          <streetAddressLine><%= entry.prescriber.addresses.first.street.first %></streetAddressLine>
+                          <city><%= entry.prescriber.addresses.first.city %></city>
+                          <state><%= entry.prescriber.addresses.first.state %></state>
+                          <postalCode><%= entry.prescriber.addresses.first.zip %></postalCode>
+                          <country>US</country>                          
+                      </addr>
+                      <telecom nullFlavor="UNK"/>
+                      <assignedPerson>
+                          <name>
+                              <given><%= entry.prescriber.given_name %></given>
+                              <family><%= entry.prescriber.family_name %></family>
+                          </name>
+                      </assignedPerson>
+                  </assignedAuthor>
+              </author>
+          </supply>
+      </entryRelationship>
+
     </entry>
     <% end -%>
   </section>
